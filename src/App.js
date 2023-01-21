@@ -1,24 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import Login from "./Pages/login";
+import "./Assets/CSS/reset.css";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Cadastro from "./Pages/cadastro";
+import Home from "./Pages/home";
+import Context from "./Pages/Context";
+import NovaEntrada from "./Pages/nova-entrada";
+import NovaSaida from "./Pages/nova-saida";
+import { useState } from "react";
+
 
 function App() {
+  const [info, setInfo] = useState({
+    token: "",
+    image: ""
+  });
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Context.Provider value={[info, setInfo]}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/cadastro" element={<Cadastro />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/nova-entrada" element = {<NovaEntrada/>}/>
+            <Route path="/nova-saida" element = {<NovaSaida/>}/>
+          </Routes>
+        </BrowserRouter>
+      </Context.Provider>
+
+    </>
   );
 }
 
