@@ -2,30 +2,98 @@ import styled from "styled-components";
 import { AiOutlineExport } from "react-icons/ai"
 import { AiOutlineMinusCircle } from "react-icons/ai"
 import { AiOutlinePlusCircle } from "react-icons/ai"
+import { createContext, useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Context from "./Context";
+import axios from "axios";
 
 export default function Home() {
+
+    const navigate = useNavigate();
+    const [info, setInfo] = useContext(Context);
+    const [transactions, setTransactions] = useState([]);
+    const nomeUsuario = "" + info.user.nome;
+    const teste = [];
+    const config = {
+        headers: {
+            "Authorization": `Bearer ${info.token}`
+        }
+    };
+    let total = 0;
+
+    useEffect(() => {
+        axios.get('/transactions', config).then(({ data }) => {
+            const newTransaction = data;
+            console.log(newTransaction);
+            setTransactions(newTransaction);
+        });
+    }, []);
+
+    total = transactions.reduce((accumulator, transaction) => {
+        return transaction.type === "entrada" ?
+            accumulator + Number(transaction.valor) :
+            accumulator - Number(transaction.valor)
+    }, 0);
+
     return (
         <>
             <Corpo>
                 <TopTitle>
-                    <h1>Olá, Fulano</h1>
+                    <h1>'Olá, {nomeUsuario}'</h1>
                     <AiOutlineExport></AiOutlineExport>
                 </TopTitle>
-                <WhiteBoard>
-                    <h1>Não há registros de entrada ou saída</h1>
-                </WhiteBoard>
-                <NovaEntrada>
-                    <h1><AiOutlinePlusCircle color="white" fontSize="22px" /></h1>
-                    <h2>Nova <br />entrada</h2>
-                </NovaEntrada>
-                <NovaSaida>
-                    <h1><AiOutlineMinusCircle color="white" fontSize="22px" /></h1>
-                    <h2>Nova <br />saída</h2>
-                </NovaSaida>
+                {transactions.length > 0 ? (
+                    <WhiteBoard2>
+                        {transactions.map((movimentacao, i) => {
+                            return (
+                                
+                                    <Movimentacao key={i}>
+                                        <Date>{movimentacao.dia}</Date>
+                                        <Descricao>{movimentacao.descricao}</Descricao>
+                                        {movimentacao.type === "entrada" ? (
+                                            <Valor cor="green">{movimentacao.valor}</Valor>
+                                        ) : (
+                                            <Valor cor="red">{movimentacao.valor}</Valor>
+                                        )}
+
+                                    </Movimentacao>
+                           
+                            )
+                        })}
+                        <Saldo>
+                            <p>SALDO</p>
+                            {total > 0 ? (
+                                <ValorTotal cor = "green">{total}</ValorTotal>
+                            ):(
+                                <ValorTotal cor = "red">{total}</ValorTotal>
+                            )}
+                            
+                        </Saldo>
+                    </WhiteBoard2>
+                ) : (
+                    <WhiteBoard>
+                        <h1>Não há registros de entrada ou saída</h1>
+                    </WhiteBoard>
+                )}
+
+                <Link to="/nova-entrada">
+                    <NovaEntrada>
+                        <h1><AiOutlinePlusCircle color="white" fontSize="22px" /></h1>
+                        <h2>Nova <br />entrada</h2>
+                    </NovaEntrada>
+                </Link>
+                <Link to="/nova-saida">
+                    <NovaSaida>
+                        <h1><AiOutlineMinusCircle color="white" fontSize="22px" /></h1>
+                        <h2>Nova <br />saída</h2>
+                    </NovaSaida>
+                </Link>
             </Corpo>
         </>
-    );
+    )
+
 }
+
 
 const Corpo = styled.div`
 background-color: #8C11BE;
@@ -49,7 +117,7 @@ font-size: 26px;
 line-height: 31px;
 color: #FFFFFF;
 h1{
-    margin-right:163px;
+    width:304px;
 }
 
 `
@@ -65,6 +133,30 @@ top: 78px;
 display:flex;
 align-items:center;
 justify-content:center;
+background: #FFFFFF;
+border-radius: 5px;
+h1{
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 23px;
+    text-align: center;
+    color: #868686;
+}
+`
+const WhiteBoard2 = styled.div`
+position: absolute;
+box-sizing:border-box;
+overflow:scroll;
+padding-left:12px;
+padding-right:12px;
+padding-top:23px;
+padding-bottom:42px;
+width: 326px;
+height: 446px;
+left: 25px;
+top: 78px;
 background: #FFFFFF;
 border-radius: 5px;
 h1{
@@ -135,4 +227,79 @@ h2{
     line-height: 20px;
     color: #FFFFFF;
 }
-` 
+`
+
+const Movimentacao = styled.div`
+width:302px;
+margin-bottom:20px;
+display:flex;
+`
+
+const Date = styled.div`
+font-family: 'Raleway';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 19px;
+color: #C6C6C6;
+margin-right:10px;
+`
+const Descricao = styled.div`
+font-family: 'Raleway';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 19px;
+color: #000000;
+`
+const Valor = styled.div`
+position:absolute;
+right:11px;
+font-family: 'Raleway';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 19px;
+text-align: right;
+color: ${props => props.cor};
+`
+const Saldo = styled.div`
+position:fixed;
+top:494px;
+width:302px;
+height:30px;
+background-color:#FFFFFF;
+display:flex;
+border-radius:5px;
+p{
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 17px;
+    line-height: 20px;
+    color: #000000;
+}
+h1{
+    position:absolute;
+    right:11px;
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 20px;
+    text-align: right;
+    color: ${props => props.cor};
+}
+`
+const ValorTotal = styled.div`
+    position:fixed;
+    top:494px;
+    left:300px;
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 20px;
+    text-align: right;
+    color: ${props => props.cor};
+`

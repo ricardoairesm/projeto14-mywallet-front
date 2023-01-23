@@ -9,13 +9,13 @@ import { ThreeDots } from "react-loader-spinner";
 export default function Cadastro() {
 
     const [estado, setEstado] = useState("padrao");
+    const [error, setError] = useState(null);
     const [infoCadastro, setInfoCadastro] = useState({
+        nome: "",
         email: "",
-        name: "",
-        image: "",
-        password: ""
+        senha: "",
+        senha_conferir: ""
     });
-    const urlCadastro = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up";
     const navigate = useNavigate();
 
     function handleForm(e) {
@@ -25,21 +25,25 @@ export default function Cadastro() {
         })
     }
 
-    function cadastrar() {
-        if (infoCadastro.email.length != 0 && infoCadastro.name.length != 0 && infoCadastro.image.length != 0 && infoCadastro.password.length != 0) {
-            setEstado("Loading")
-            axios.post(urlCadastro, infoCadastro).then(
-                ()=> {navigate("/")}
-            ).catch(
-                ()=>{
-                    alert("Problemas no cadastro verifique suas informações!")
-                    setEstado("padrao");
-                }
-            )
+    const sendCadastro = async (e) => {
+        e.preventDefault();
+        try {
+            setEstado("Loading");
+            const { senha, senha_conferir } = infoCadastro
+            if (senha != senha_conferir) {
+                setEstado("padrao");
+                return alert("A senhas devem ser iguais!");
+            }
+            const { data } = await axios.post('/sign-up', infoCadastro);
+            navigate('/');
+        } catch (error) {
+            setError(error.response.data);
+            alert("Este email já esta sendo utilizado!");
+            setEstado("padrao");
         }
-
     }
-    let a = "blue";
+
+
 
     if (estado === "padrao") {
         return (
@@ -50,15 +54,13 @@ export default function Cadastro() {
                         <img src={logo}></img>
                     </Logo>
 
-                    <form id="formCadastro">
-                        <InputEmail  data-test="email-input"  type="email" name="email" onChange={handleForm} />
-                        <InputSenha  data-test="password-input"  type="password" name="password" onChange={handleForm} />
-                        <InputNome   data-test="user-name-input" type="text" name="name" onChange={handleForm} />
-                        <InputConfirmarSenha   data-test="user-image-input"  type="url" name="image" onChange={handleForm} />
+                    <form onSubmit={sendCadastro}>
+                        <InputNome data-test="user-name-input" type="text" name="nome" onChange={handleForm} />
+                        <InputEmail data-test="email-input" type="email" name="email" onChange={handleForm} />
+                        <InputSenha data-test="password-input" type="password" name="senha" onChange={handleForm} />
+                        <InputConfirmarSenha data-test="user-image-input" type="password" name="senha_conferir" onChange={handleForm} />
+                        <BotaoCadastrar data-test="signup-btn" type="submit">Cadastrar</BotaoCadastrar>
                     </form>
-
-                    <BotaoCadastrar data-test="signup-btn" onClick={cadastrar}>Cadastrar</BotaoCadastrar>
-
                     <Link to="/">
                         <IrLogin data-test="login-link">Já tem uma conta? Faça login!</IrLogin>
                     </Link>
@@ -77,13 +79,13 @@ export default function Cadastro() {
                 </Logo>
 
                 <form id="formCadastro">
-                    <InputEmail disabled ={true} type="email" name="email" onChange={handleForm} />
-                    <InputSenha disabled={true} type="password" name="password" onChange={handleForm} />
-                    <InputNome disabled= {true} type="text" name="name" onChange={handleForm} />
-                    <InputConfirmarSenha disabled= {true} type="url" name="image" onChange={handleForm} />
+                    <InputNome disabled={true} />
+                    <InputEmail disabled={true} />
+                    <InputSenha disabled={true} />
+                    <InputConfirmarSenha disabled={true} type="url" name="image" onChange={handleForm} />
                 </form>
 
-                <BotaoCadastrar disabled = "true"><ThreeDots width="50px" color = "white"/></BotaoCadastrar>
+                <BotaoCadastrar disabled={true}><ThreeDots width="50px" color="white" /></BotaoCadastrar>
 
                 <Link to="/">
                     <IrLogin>Já tem uma conta? Faça login!</IrLogin>
@@ -280,6 +282,7 @@ position: absolute;
 width: 326px;
 height: 46px;
 top: 483px;
+left:25px;
 background: #A328D6;
 border-radius: 5px;
 font-family: 'Raleway';

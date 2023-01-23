@@ -7,18 +7,36 @@ import { ThreeDots } from "react-loader-spinner";
 import Context from "./Context";
 
 
-export default function Login() {
 
+export default function Login() {
+    const [error, setError] = useState(null);
     const [estado, setEstado] = useState("padrao");
     const navigate = useNavigate();
-    const [info,setInfo] = useContext(Context);
+    const [info, setInfo] = useContext(Context);
     const [infoLogin, setInfoLogin] = useState({
         email: "",
-        password: ""
+        senha: ""
     });
 
-    const urlLogin = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login";
-    let a = undefined;
+
+    const sendInfo = async (e) => {
+        e.preventDefault();
+        try {
+            setEstado("Loading");
+            const { data } = await axios.post('/sign-in', infoLogin);
+            const newInfo = {
+                ...info,
+                user: data.user,
+                token: data.token
+            }
+            setInfo(newInfo);
+            navigate('/home');
+        } catch (error) {
+            alert("Email ou senha incorretos");
+            setEstado("padrao");
+            setError(error.response.data);
+        }
+    }
 
     function handleLogin(e) {
         setInfoLogin({
@@ -26,27 +44,6 @@ export default function Login() {
             [e.target.name]: e.target.value,
         })
     }
-
-    function fazerLogin() {
-
-        if (infoLogin.email.length != 0 &&  infoLogin.password.length != 0) {
-            setEstado("Loading")
-            axios.post(urlLogin, infoLogin).then(
-                (response) => {
-                    navigate("/habitos"); 
-                    const newInfo = {...info,
-                    token: response.data.token,
-                    image: response.data.image
-                }; 
-                    setInfo(newInfo);
-                }
-            ).catch(
-                () => alert("Email ou senha invalido!")
-            );
-        }
-
-    }
-
 
     if (estado === "padrao") {
         return (
@@ -56,16 +53,14 @@ export default function Login() {
                     <Logo>
                         <img src={logo}></img>
                     </Logo>
-
-                    <InputEmail data-test="email-input" name="email" onChange={handleLogin} />
-                    <InputSenha data-test="password-input" type="password" name="password" onChange={handleLogin} />
-                    <BotaoEntrar data-test="login-btn" onClick={fazerLogin}>Entrar</BotaoEntrar>
-
-
-                    <Link to="/cadastro">
-                        <IrCadastro data-test="signup-link">Primeira vez? Cadastre-se!</IrCadastro>
-                    </Link>
-
+                    <form onSubmit={sendInfo}>
+                        <InputEmail data-test="email-input" name="email" onChange={handleLogin} />
+                        <InputSenha data-test="password-input" type="password" name="senha" onChange={handleLogin} />
+                        <BotaoEntrar data-test="login-btn" type="submit">Entrar</BotaoEntrar>
+                        <Link to="/cadastro">
+                            <IrCadastro data-test="signup-link">Primeira vez? Cadastre-se!</IrCadastro>
+                        </Link>
+                    </form>
                 </Corpo>
             </>
         )
@@ -78,15 +73,14 @@ export default function Login() {
                 <Logo>
                     <img src={logo}></img>
                 </Logo>
-
-                <InputEmail disabled={true} name="email" onChange={handleLogin} />
-                <InputSenha disabled={true} type="password" name="password" onChange={handleLogin} />
-                <BotaoEntrar ><ThreeDots width="50px" color = "white"/></BotaoEntrar>
-
-
-                <Link to="/cadastro">
-                    <IrCadastro>Primeira vez? Cadastre-se!</IrCadastro>
-                </Link>
+                <form onSubmit={sendInfo}>
+                    <InputEmail disabled={true} name="email" onChange={handleLogin} />
+                    <InputSenha disabled={true} type="password" name="password" onChange={handleLogin} />
+                    <BotaoEntrarLoading disabled={true}><ThreeDots width="50px" color="white" /></BotaoEntrarLoading>
+                    <Link to="/cadastro">
+                        <IrCadastro>Primeira vez? Cadastre-se!</IrCadastro>
+                    </Link>
+                </form>
 
             </Corpo>
         </>
@@ -196,8 +190,9 @@ const BotaoEntrar = styled.button`
     width: 326px;
     height: 46px;
     top: 375px;
+    left:25px;
     background: #A328D6;
-    border-radius: 4.63636px;
+    border-radius: 5px;
     font-family: 'Raleway';
     font-style: normal;
     font-weight: 700;
@@ -209,29 +204,26 @@ const BotaoEntrar = styled.button`
   `
 
 const BotaoEntrarLoading = styled.button`
-display:none;
 all:unset;
 display: flex;
 justify-content:center;
 align-items:center;
 position: absolute;
-width: 303px;
-height: 45px;
-top: 381px;
-background: #52B6FF;
-border-radius: 4.63636px;
-font-family: 'Lexend Deca';
+width: 326px;
+height: 46px;
+top: 375px;
+left:25px;
+background: #A328D6;
+border-radius: 5px;
+font-family: 'Raleway';
 font-style: normal;
-font-weight: 400;
-font-size: 20.976px;
-line-height: 26px;
-text-align: center;
-
-color: #FFFFFF;
-
+font-weight: 700;
+font-size: 20px;    
+line-height: 23px;
+color:#FFFFFF;
 `
 
-const IrCadastro = styled.div`
+const IrCadastro = styled.button`
 all:unset;
    
 position: absolute;

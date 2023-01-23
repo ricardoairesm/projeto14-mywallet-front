@@ -11,8 +11,11 @@ import { useState } from "react";
 
 function App() {
   const [info, setInfo] = useState({
+    user:{
+      nome: "",
+      email: ""
+    },
     token: "",
-    image: ""
   });
   return (
     <>
@@ -22,8 +25,8 @@ function App() {
             <Route path="/" element={<Login />} />
             <Route path="/cadastro" element={<Cadastro />} />
             <Route path="/home" element={<Home />} />
-            <Route path="/nova-entrada" element = {<NovaEntrada/>}/>
-            <Route path="/nova-saida" element = {<NovaSaida/>}/>
+            <Route path="/nova-entrada" element={<NovaEntrada />} />
+            <Route path="/nova-saida" element={<NovaSaida />} />
           </Routes>
         </BrowserRouter>
       </Context.Provider>
