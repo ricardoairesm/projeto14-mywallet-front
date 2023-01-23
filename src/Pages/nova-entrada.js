@@ -42,9 +42,9 @@ export default function NovaEntrada() {
             <Corpo>
                 <TopTitle>Nova entrada</TopTitle>
                 <form onSubmit={sendInfo}>
-                    <InputValor name="valor" onChange={handleTransaction} />
-                    <InputDescricao name="descricao" onChange={handleTransaction} />
-                    <BotaoSalvar type="submit">Salvar entrada</BotaoSalvar>
+                    <InputValor data-test="registry-amount-input" name="valor" onChange={handleTransaction} />
+                    <InputDescricao data-test="registry-name-input" name="descricao" onChange={handleTransaction} />
+                    <BotaoSalvar data-test="registry-save" type="submit">Salvar entrada</BotaoSalvar>
                 </form>
             </Corpo>
         </>

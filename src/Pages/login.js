@@ -54,9 +54,9 @@ export default function Login() {
                         <img src={logo}></img>
                     </Logo>
                     <form onSubmit={sendInfo}>
-                        <InputEmail data-test="email-input" name="email" onChange={handleLogin} />
-                        <InputSenha data-test="password-input" type="password" name="senha" onChange={handleLogin} />
-                        <BotaoEntrar data-test="login-btn" type="submit">Entrar</BotaoEntrar>
+                        <InputEmail data-test="email" name="email" onChange={handleLogin} />
+                        <InputSenha data-test="password" type="password" name="senha" onChange={handleLogin} />
+                        <BotaoEntrar data-test="sign-in-submit" type="submit">Entrar</BotaoEntrar>
                         <Link to="/cadastro">
                             <IrCadastro data-test="signup-link">Primeira vez? Cadastre-se!</IrCadastro>
                         </Link>

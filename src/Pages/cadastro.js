@@ -55,11 +55,11 @@ export default function Cadastro() {
                     </Logo>
 
                     <form onSubmit={sendCadastro}>
-                        <InputNome data-test="user-name-input" type="text" name="nome" onChange={handleForm} />
-                        <InputEmail data-test="email-input" type="email" name="email" onChange={handleForm} />
-                        <InputSenha data-test="password-input" type="password" name="senha" onChange={handleForm} />
-                        <InputConfirmarSenha data-test="user-image-input" type="password" name="senha_conferir" onChange={handleForm} />
-                        <BotaoCadastrar data-test="signup-btn" type="submit">Cadastrar</BotaoCadastrar>
+                        <InputNome data-test="name" type="text" name="nome" onChange={handleForm} />
+                        <InputEmail data-test="email" type="email" name="email" onChange={handleForm} />
+                        <InputSenha data-test="password" type="password" name="senha" onChange={handleForm} />
+                        <InputConfirmarSenha data-test="conf-password" type="password" name="senha_conferir" onChange={handleForm} />
+                        <BotaoCadastrar data-test="sign-up-submit" type="submit">Cadastrar</BotaoCadastrar>
                     </form>
                     <Link to="/">
                         <IrLogin data-test="login-link">Já tem uma conta? Faça login!</IrLogin>

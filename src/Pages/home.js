@@ -39,7 +39,7 @@ export default function Home() {
         <>
             <Corpo>
                 <TopTitle>
-                    <h1>'Olá, {nomeUsuario}'</h1>
+                    <h1 data-test="user-name">'Olá, {nomeUsuario}'</h1>
                     <AiOutlineExport></AiOutlineExport>
                 </TopTitle>
                 {transactions.length > 0 ? (
@@ -49,11 +49,11 @@ export default function Home() {
                                 
                                     <Movimentacao key={i}>
                                         <Date>{movimentacao.dia}</Date>
-                                        <Descricao>{movimentacao.descricao}</Descricao>
+                                        <Descricao data-test="registry-name">{movimentacao.descricao}</Descricao>
                                         {movimentacao.type === "entrada" ? (
-                                            <Valor cor="green">{movimentacao.valor}</Valor>
+                                            <Valor data-test="registry-amount" cor="green">{movimentacao.valor}</Valor>
                                         ) : (
-                                            <Valor cor="red">{movimentacao.valor}</Valor>
+                                            <Valor data-test="registry-amount" cor="red">{movimentacao.valor}</Valor>
                                         )}
 
                                     </Movimentacao>
@@ -63,9 +63,9 @@ export default function Home() {
                         <Saldo>
                             <p>SALDO</p>
                             {total > 0 ? (
-                                <ValorTotal cor = "green">{total}</ValorTotal>
+                                <ValorTotal data-test="total-amount" cor = "green">{total}</ValorTotal>
                             ):(
-                                <ValorTotal cor = "red">{total}</ValorTotal>
+                                <ValorTotal data-test="total-amount" cor = "red">{total}</ValorTotal>
                             )}
                             
                         </Saldo>
@@ -77,13 +77,13 @@ export default function Home() {
                 )}
 
                 <Link to="/nova-entrada">
-                    <NovaEntrada>
+                    <NovaEntrada data-test="new-income">
                         <h1><AiOutlinePlusCircle color="white" fontSize="22px" /></h1>
                         <h2>Nova <br />entrada</h2>
                     </NovaEntrada>
                 </Link>
                 <Link to="/nova-saida">
-                    <NovaSaida>
+                    <NovaSaida data-test="new-expense">
                         <h1><AiOutlineMinusCircle color="white" fontSize="22px" /></h1>
                         <h2>Nova <br />saída</h2>
                     </NovaSaida>
